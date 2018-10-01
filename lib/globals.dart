@@ -29,9 +29,7 @@ void updateGlobalDataFromDevice(String uid, String fName, String lName) {
   lastName = lName;
   address = {
     "Address": {
-      "Address Line 1": "0",
-      "Address Line 2": "0",
-      "City": "0",
+      "Main": "0",
       "Pincode": "0"
     }
   };

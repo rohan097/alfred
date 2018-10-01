@@ -5,6 +5,7 @@ import 'package:alfred/homepage.dart';
 import 'package:alfred/firebase_db.dart';
 import 'globals.dart' as globals;
 import 'dart:async';
+import 'package:flutter/services.dart';
 
 enum AuthStatus { signedIn, notSignedIn }
 
@@ -19,8 +20,10 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> {
+
   AuthStatus _authStatus = AuthStatus.notSignedIn;
 
+  String userID;
   @override
   void initState() {
 
@@ -33,10 +36,10 @@ class _RootPageState extends State<RootPage> {
         });
       } else {
         print("In root page. The user id currently logged in is: $userId");
-        globals.updateGlobalDataFromInternet(userId).then((value) {
-          setState(() {
-            _authStatus = AuthStatus.signedIn;
-          });
+        this.userID = userId;
+
+        setState(() {
+          _authStatus = AuthStatus.signedIn;
         });
       }
     });
@@ -47,6 +50,7 @@ class _RootPageState extends State<RootPage> {
     setState(() {
       print ("Setting state as signedIn");
       _authStatus = AuthStatus.signedIn;
+      initState();
     });
   }
 
@@ -55,8 +59,10 @@ class _RootPageState extends State<RootPage> {
       _authStatus = AuthStatus.notSignedIn;
     });
   }
+
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays([]);
     switch (_authStatus) {
       case AuthStatus.notSignedIn:
         return new LoginScreen(
@@ -65,6 +71,7 @@ class _RootPageState extends State<RootPage> {
         return HomePage(
           auth: widget.auth,
           onSignedOut: _signedOut,
+          userID: userID,
         );
     }
   }

@@ -38,7 +38,10 @@ class _ChatScreenState extends State<ChatScreen> {
               margin: new EdgeInsets.symmetric(horizontal: 4.0),
               child: new IconButton(
                   icon: new Icon(Icons.send),
-                  onPressed: () => _handleSubmitted(_textController.text)),
+                  onPressed: () {
+                    if (!_textController.text.isEmpty)
+                      _handleSubmitted(_textController.text);
+                  }),
             ),
           ],
         ),
@@ -48,12 +51,10 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void Response(query) async {
     _textController.clear();
-    Dialogflow dialogflow =
-        Dialogflow(
-          token: "582e766ed38642bb87612e76f5363531",
-          sessionId: globals.firebaseUID,
-
-        );
+    Dialogflow dialogflow = Dialogflow(
+      token: "8f6e89a0df5f41349c6a0e5d0d3f3209",
+      sessionId: globals.firebaseUID,
+    );
     AIResponse response = await dialogflow.sendQuery(query);
     ChatMessage message = new ChatMessage(
       text: response.getMessageResponse(),
@@ -114,7 +115,7 @@ class ChatMessage extends StatelessWidget {
     return <Widget>[
       new Container(
         margin: const EdgeInsets.only(right: 16.0),
-        child: new CircleAvatar(child: new Image.asset("img/placeholder.png")),
+        child: new CircleAvatar(child: Text("A")),
       ),
       new Expanded(
         child: new Column(
@@ -123,8 +124,29 @@ class ChatMessage extends StatelessWidget {
             new Text(this.name,
                 style: new TextStyle(fontWeight: FontWeight.bold)),
             new Container(
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                border: Border.all(
+                  color: Color(0xFFC54B25),
+                  width: 1.0,
+                ),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8.0),
+                  topRight: Radius.circular(16.0),
+                  bottomLeft: Radius.circular(16.0),
+                  bottomRight: Radius.circular(16.0),
+                ),
+              ),
               margin: const EdgeInsets.only(top: 5.0),
-              child: new Text(text),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: new Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -140,8 +162,24 @@ class ChatMessage extends StatelessWidget {
           children: <Widget>[
             new Text(this.name, style: Theme.of(context).textTheme.subhead),
             new Container(
+              decoration: BoxDecoration(
+                color: Colors.white54,
+                border: Border.all(
+                  color: Color(0xFFC54B25),
+                  width: 1.0,
+                ),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16.0),
+                  topRight: Radius.circular(4.0),
+                  bottomLeft: Radius.circular(16.0),
+                  bottomRight: Radius.circular(16.0),
+                ),
+              ),
               margin: const EdgeInsets.only(top: 5.0),
-              child: new Text(text),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: new Text(text),
+              ),
             ),
           ],
         ),

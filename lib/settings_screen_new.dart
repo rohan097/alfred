@@ -9,17 +9,42 @@ class SettingScreen extends StatefulWidget {
   SettingScreenState createState() => SettingScreenState();
 }
 
+List<String> createPhonePanel() {
+  String headerText1 = "Phone Number";
+  String headerText2 = "";
+  try {
+    headerText2 = globals.mobileNumber == "0" ? " " : "${globals.mobileNumber}";
+  } catch (e) {
+    print("Looks like globals haven't updated yet.");
+  }
+  return [headerText1, headerText2];
+}
+
+List<String> createAddressPanel() {
+  String headerText1 = "Address";
+  String headerText2 = "";
+  try {
+    headerText2 = globals.address["Pincode"] == "0"
+        ? " "
+        : "${globals.address["Main"]  + "\n" + globals.address["Pincode"]}";
+  } catch (e) {
+    print("Looks like globals haven't updated yet.");
+  }
+  return [headerText1, headerText2];
+}
+
 class SettingScreenState extends State<SettingScreen> {
+
+  static List<String> _addressPanel = createAddressPanel();
+  static List<String> _phonePanel = createPhonePanel();
   List<MyPanel> _items = <MyPanel>[
     MyPanel(
-        headerText1: "Phone Number",
-        headerText2: globals.mobileNumber == "0"? " ": "${globals.mobileNumber}",
+        headerText1: _phonePanel[0],
+        headerText2: _phonePanel[1],
         purpose: "updatePhone"),
     MyPanel(
-        headerText1: "Address",
-        headerText2: globals.address["City"] == "0"?
-            " ":
-            "${globals.address["Address Line 1"]+", "+globals.address["Address Line 2"]+", "+globals.address["City"]+", "+globals.address["Pincode"]}",
+        headerText1: _addressPanel[0],
+        headerText2: _addressPanel[1],
         purpose: "updateAddress"),
   ];
 
@@ -37,10 +62,10 @@ class SettingScreenState extends State<SettingScreen> {
         child: Column(
           children: <Widget>[
             Expanded(
-              child: Text("Edit my data",
-              style: TextStyle(
-                fontSize: 32.0
-              ),),
+              child: Text(
+                "Edit my data",
+                style: TextStyle(fontSize: 32.0),
+              ),
               flex: 1,
             ),
             Expanded(
@@ -237,21 +262,18 @@ class MyPanel {
     if (form.validate()) {
       form.save();
 
-
       BaseDB db = new DB();
       if (this.purpose == "updatePhone") {
         db.updateUserMobile(_mobileNumber);
       } else {
         Map<dynamic, dynamic> data;
         data = {
-          "Address Line 1": _addressLine1,
-          "Address Line 2": _addressLine2,
-          "City": _city,
+          "Main": _addressLine1 + ", " + _addressLine2 + ", " + _city,
           "Pincode": _pinCode,
         };
         db.updateUserAddress(data);
       }
-      print (globals.firebaseUID);
+      print(globals.firebaseUID);
       globals.updateGlobalDataFromInternet(globals.firebaseUID);
 
       SnackBar snackBar = SnackBar(

@@ -7,17 +7,21 @@ typedef VoidNavigate = void Function(Map<String, dynamic>);
 
 class ComplaintCard extends StatefulWidget {
   final VoidNavigate onChoosingTime;
+  final String type;
   final String complaintId;
   final String productType;
   final String issueType;
   final String description;
   final String date;
   final String progress;
+  final String status;
   final List<Map<String, dynamic>> timeSlots;
   String timeSlot;
   List<bool> timeSlotChosen = [false, false, false, false];
+  Map<dynamic, dynamic> callDetails;
 
   ComplaintCard({
+    this.type,
     this.complaintId,
     this.productType,
     this.issueType,
@@ -25,6 +29,8 @@ class ComplaintCard extends StatefulWidget {
     this.date,
     this.progress,
     this.timeSlot,
+    this.status,
+    this.callDetails = const {"Date": "0", "Time": "0,"},
     this.timeSlots = const [
       {"Date": "0", "Time": "0"},
       {"Date": "0", "Time": "0"},
@@ -62,6 +68,14 @@ class ComplaintCardState extends State<ComplaintCard> {
             Padding(
               padding: EdgeInsets.all(8.0),
               child: Text(
+                "Ticket ID: ${widget.complaintId}",
+                style: TextStyle(fontSize: 16.0),
+                textAlign: TextAlign.left,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text(
                 "Issue: ${widget.issueType}",
                 style: TextStyle(fontSize: 16.0),
                 textAlign: TextAlign.left,
@@ -70,7 +84,8 @@ class ComplaintCardState extends State<ComplaintCard> {
             Padding(
               padding: EdgeInsets.all(8.0),
               child: Text(
-                "Description: ${widget.description}",
+                widget.type == "House Call"?
+                "Description: ${widget.description}": "Time of Call: ${widget.callDetails["Time"] == "0"?"Not yet confirmed": widget.callDetails["Time"]}",
                 style: TextStyle(fontSize: 16.0),
                 textAlign: TextAlign.left,
               ),
@@ -98,9 +113,9 @@ class ComplaintCardState extends State<ComplaintCard> {
     print(widget.progress);
     if (widget.progress.toLowerCase() == "under review.") {
       issueColor = Color.fromRGBO(255, 255, 255, 1.0);
-    } else if (widget.progress.toLowerCase() == "agent allotted.") {
+    } else if (widget.progress.toLowerCase() == "agent allotted." || widget.progress.toLowerCase() == "call scheduled") {
       issueColor = Color(0xFFE6BB24);
-    } else if (widget.progress.toLowerCase() == "agent completed task.") {
+    } else if (widget.progress.toLowerCase() == "resolved.") {
       issueColor = Colors.lightGreen;
     }
 
@@ -117,6 +132,7 @@ class ComplaintCardState extends State<ComplaintCard> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
+          Icon(widget.type == "House Call"? Icons.home: Icons.phone),
           Text("${widget.productType}",
               style: TextStyle(fontSize: 24.0, color: Colors.white)),
           DecoratedBox(
@@ -139,140 +155,146 @@ class ComplaintCardState extends State<ComplaintCard> {
   }
 
   Widget timeOptions(List<Map<String, dynamic>> time) {
-    if (widget.timeSlot == "1") {
-      widget.timeSlotChosen[0] = true;
-      widget.timeSlotChosen[1] = false;
-      widget.timeSlotChosen[2] = false;
-      widget.timeSlotChosen[3] = false;
-    } else if (widget.timeSlot == "2") {
-      widget.timeSlotChosen[0] = false;
-      widget.timeSlotChosen[1] = true;
-      widget.timeSlotChosen[2] = false;
-      widget.timeSlotChosen[3] = false;
-    } else if (widget.timeSlot == "3") {
-      widget.timeSlotChosen[0] = false;
-      widget.timeSlotChosen[1] = false;
-      widget.timeSlotChosen[2] = true;
-      widget.timeSlotChosen[3] = false;
-    } else if (widget.timeSlot == "4") {
-      widget.timeSlotChosen[0] = false;
-      widget.timeSlotChosen[1] = false;
-      widget.timeSlotChosen[2] = false;
-      widget.timeSlotChosen[3] = true;
-    }
-    print(widget.timeSlotChosen);
-    print("Going to render now");
-    if (time[0]["Time"] == "0") {
-      return Center(
-        child: Text(
-          "No time slots have been alotted yet.",
-          style: TextStyle(
-            fontSize: 16.0,
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-      );
-    } else {
-      return Column(
-        children: <Widget>[
-          Text(
-            "Available slots for visit.",
+
+    if (widget.type == "House Call" && widget.status == "Open") {
+      if (widget.timeSlot == "1") {
+        widget.timeSlotChosen[0] = true;
+        widget.timeSlotChosen[1] = false;
+        widget.timeSlotChosen[2] = false;
+        widget.timeSlotChosen[3] = false;
+      } else if (widget.timeSlot == "2") {
+        widget.timeSlotChosen[0] = false;
+        widget.timeSlotChosen[1] = true;
+        widget.timeSlotChosen[2] = false;
+        widget.timeSlotChosen[3] = false;
+      } else if (widget.timeSlot == "3") {
+        widget.timeSlotChosen[0] = false;
+        widget.timeSlotChosen[1] = false;
+        widget.timeSlotChosen[2] = true;
+        widget.timeSlotChosen[3] = false;
+      } else if (widget.timeSlot == "4") {
+        widget.timeSlotChosen[0] = false;
+        widget.timeSlotChosen[1] = false;
+        widget.timeSlotChosen[2] = false;
+        widget.timeSlotChosen[3] = true;
+      }
+      print(widget.timeSlotChosen);
+      print("Going to render now");
+      if (time[0]["Time"] == "0") {
+        return Center(
+          child: Text(
+            "No time slots have been alotted yet.",
             style: TextStyle(
               fontSize: 16.0,
-              decoration: TextDecoration.underline,
+              fontWeight: FontWeight.w400,
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RaisedButton(
-                  child: Text(
-                      "Date: ${time[0]["Date"]}\nTime: ${time[0]["Time"]}"),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  color: widget.timeSlotChosen[0]
-                      ? Colors.deepOrangeAccent
-                      : Colors.grey,
-                  onPressed: () {
-                    widget.timeSlotChosen[0] = true;
-                    widget.timeSlotChosen[1] = false;
-                    widget.timeSlotChosen[2] = false;
-                    widget.timeSlotChosen[3] = false;
-                    _chosenTime();
-                  },
-                ),
+        );
+      } else {
+        return Column(
+          children: <Widget>[
+            Text(
+              "Available slots for visit",
+              style: TextStyle(
+                fontSize: 16.0,
+                decoration: TextDecoration.underline,
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RaisedButton(
-                  child: Text(
-                      "Date: ${time[1]["Date"]}\nTime: ${time[1]["Time"]}"),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: RaisedButton(
+                    child: Text(
+                        "Date: ${time[0]["Date"]}\nTime: ${time[0]["Time"]}"),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    color: widget.timeSlotChosen[0]
+                        ? Colors.deepOrangeAccent
+                        : Colors.grey,
+                    onPressed: () {
+                      widget.timeSlotChosen[0] = true;
+                      widget.timeSlotChosen[1] = false;
+                      widget.timeSlotChosen[2] = false;
+                      widget.timeSlotChosen[3] = false;
+                      _chosenTime();
+                    },
                   ),
-                  color: widget.timeSlotChosen[1]
-                      ? Colors.deepOrangeAccent
-                      : Colors.grey,
-                  onPressed: () {
-                    widget.timeSlotChosen[0] = false;
-                    widget.timeSlotChosen[1] = true;
-                    widget.timeSlotChosen[2] = false;
-                    widget.timeSlotChosen[3] = false;
-                    _chosenTime();
-                  },
                 ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RaisedButton(
-                  child: Text(
-                      "Date: ${time[2]["Date"]}\nTime: ${time[2]["Time"]}"),
-                  color: widget.timeSlotChosen[2]
-                      ? Colors.deepOrangeAccent
-                      : Colors.grey,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: RaisedButton(
+                    child: Text(
+                        "Date: ${time[1]["Date"]}\nTime: ${time[1]["Time"]}"),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    color: widget.timeSlotChosen[1]
+                        ? Colors.deepOrangeAccent
+                        : Colors.grey,
+                    onPressed: () {
+                      widget.timeSlotChosen[0] = false;
+                      widget.timeSlotChosen[1] = true;
+                      widget.timeSlotChosen[2] = false;
+                      widget.timeSlotChosen[3] = false;
+                      _chosenTime();
+                    },
                   ),
-                  onPressed: () {
-                    widget.timeSlotChosen[0] = false;
-                    widget.timeSlotChosen[1] = false;
-                    widget.timeSlotChosen[2] = true;
-                    widget.timeSlotChosen[3] = false;
-                    _chosenTime();
-                  },
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RaisedButton(
-                  child: Text("Request another\n slot."),
-                  color: widget.timeSlotChosen[3]
-                      ? Colors.deepOrangeAccent
-                      : Colors.grey,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: RaisedButton(
+                    child: Text(
+                        "Date: ${time[2]["Date"]}\nTime: ${time[2]["Time"]}"),
+                    color: widget.timeSlotChosen[2]
+                        ? Colors.deepOrangeAccent
+                        : Colors.grey,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    onPressed: () {
+                      widget.timeSlotChosen[0] = false;
+                      widget.timeSlotChosen[1] = false;
+                      widget.timeSlotChosen[2] = true;
+                      widget.timeSlotChosen[3] = false;
+                      _chosenTime();
+                    },
                   ),
-                  onPressed: () {
-                    widget.timeSlotChosen[0] = false;
-                    widget.timeSlotChosen[1] = false;
-                    widget.timeSlotChosen[2] = false;
-                    widget.timeSlotChosen[3] = true;
-                    _chosenTime();
-                  },
                 ),
-              ),
-            ],
-          ),
-        ],
-      );
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: RaisedButton(
+                    child: Text("Request another\n slot."),
+                    color: widget.timeSlotChosen[3]
+                        ? Colors.deepOrangeAccent
+                        : Colors.grey,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    onPressed: () {
+                      widget.timeSlotChosen[0] = false;
+                      widget.timeSlotChosen[1] = false;
+                      widget.timeSlotChosen[2] = false;
+                      widget.timeSlotChosen[3] = true;
+                      _chosenTime();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      }
+    }
+    else {
+      return Container();
     }
   }
 

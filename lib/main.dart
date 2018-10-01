@@ -5,7 +5,7 @@ import 'package:alfred/root_page.dart';
 import 'package:alfred/complaints_screen.dart';
 import 'package:alfred/settings_screen_new.dart';
 import 'package:alfred/firebase_db.dart';
-import 'package:alfred/edit_phone.dart';
+import 'help_screen.dart';
 
 void main() => runApp(new MyApp());
 
@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
         ),
         '/complaintScreen': (BuildContext context) => new ComplaintScreen(),
         '/settingsScreen': (BuildContext context) => new SettingScreen(),
+        '/helpScreen': (BuildContext context) => new HelpScreen(),
       },
       debugShowCheckedModeBanner: false,
     );

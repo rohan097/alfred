@@ -14,6 +14,7 @@ class LoginScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _LoginScreenState();
 }
 
+
 enum FormType { login, register }
 
 class _LoginScreenState extends State<LoginScreen> {
@@ -40,21 +41,30 @@ class _LoginScreenState extends State<LoginScreen> {
     if (validateAndSave()) {
       try {
         if (_formType == FormType.login) {
-          String userId =
-              await widget.auth.signInWithEmailAndPassword(_email, _password);
-          globals.firebaseUID = userId;
-          print("Signing in. User id = $userId");
-          globals.updateGlobalDataFromInternet(userId);
+          try{
+            String userId =
+            await widget.auth.signInWithEmailAndPassword(_email, _password);
+            globals.firebaseUID = userId;
+            print("Signing in. User id = $userId");
+            globals.updateGlobalDataFromInternet(userId).then((val) {
+              widget.onSignedIn();
+            });
+          }
+          catch (e) {
+            SnackBar snackBar = new SnackBar(content: Text("Invalid credentials"));
+            scaffoldKey.currentState.showSnackBar(snackBar);
+          }
+
         } else {
           String userId = await widget.auth
               .createUserWithEmailAndPassword(_email, _password);
-          Map<dynamic, dynamic> userDetails =
-              await widget.db.createUserDetails(userId, _name, _email);
-          print('Registered: $userId');
-          globals.updateGlobalDataFromDevice(
-              userId, _name.split(' ')[0], _name.split(' ')[1]);
+          Map<dynamic, dynamic> userDetails = await widget.db
+              .createUserDetails(userId, _name, _email)
+              .then((userID) {
+            print('Registered: $userId');
+              widget.onSignedIn();
+          });
         }
-        widget.onSignedIn();
       } catch (e) {
         print('Error: $e');
       }
@@ -78,6 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: Color(0xFF092c74),
       body: Center(
         child: SingleChildScrollView(

@@ -99,7 +99,7 @@ class ComplaintScreen extends StatelessWidget {
           var tempTimeSlots = <Map<String, dynamic>>[];
           if (data[key]["Status"] == "Open") {
             for (int i = 1; i <= 3; i++) {
-              tempTimeSlots.add(data[key]["Time Slots"]["Slot 1"]);
+              tempTimeSlots.add(data[key]["Time Slots"]["Slot $i"]);
             }
             _openedComplaints.add(ComplaintCard(
               complaintId: key,
@@ -110,6 +110,9 @@ class ComplaintScreen extends StatelessWidget {
               progress: data[key]["Progress"],
               timeSlot: data[key]["Time Slot Chosen"],
               timeSlots: tempTimeSlots,
+              callDetails: data[key]["Details of Call"],
+              type: data[key]["Type"],
+              status: data[key]["Status"],
             ));
           }
         }
@@ -132,7 +135,7 @@ class ComplaintScreen extends StatelessWidget {
           var tempTimeSlots = <Map<String, dynamic>>[];
           if (data[key]["Status"] == "Closed") {
             for (int i = 1; i <= 3; i++) {
-              tempTimeSlots.add(data[key]["Time Slots"]["Slot 1"]);
+              tempTimeSlots.add(data[key]["Time Slots"]["Slot $i"]);
             }
             _closedComplaints.add(ComplaintCard(
               complaintId: key,
@@ -142,7 +145,9 @@ class ComplaintScreen extends StatelessWidget {
               date: data[key]["Date"],
               progress: data[key]["Progress"],
               timeSlot: data[key]["Time Slot Chosen"],
+              type: data[key]["Type"],
               timeSlots: tempTimeSlots,
+              status: data[key]["Status"],
             ));
           }
         }
