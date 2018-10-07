@@ -87,6 +87,7 @@ class HomePage extends StatelessWidget {
                       ),
                       Text('Chat',
                         style: TextStyle(
+                          fontWeight: FontWeight.w600,
                           fontSize: 16.0,
                         ),
                       ),
@@ -115,6 +116,7 @@ class HomePage extends StatelessWidget {
                       ),
                       Text('Tickets',
                         style: TextStyle(
+                          fontWeight: FontWeight.w600,
                           fontSize: 16.0,
                         ),
                       ),
@@ -143,6 +145,7 @@ class HomePage extends StatelessWidget {
                       ),
                       Text('Settings',
                         style: TextStyle(
+                          fontWeight: FontWeight.w600,
                           fontSize: 16.0,
                         ),
                       ),
@@ -171,6 +174,7 @@ class HomePage extends StatelessWidget {
                       ),
                       Text('Help',
                         style: TextStyle(
+                          fontWeight: FontWeight.w600,
                           fontSize: 16.0,
                         ),
                       ),
@@ -192,7 +196,12 @@ class HomePage extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.0),
                 ),
-                child: Text("Logout"),
+                child: Text(
+                  "Logout",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
                 onPressed: _signOut,),
             ),
             flex: 1

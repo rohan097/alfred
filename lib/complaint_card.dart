@@ -63,59 +63,80 @@ class ComplaintCardState extends State<ComplaintCard> {
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            titleBar(),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                "Ticket ID: ${widget.complaintId}",
-                style: TextStyle(fontSize: 16.0),
-                textAlign: TextAlign.left,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                "Issue: ${widget.issueType}",
-                style: TextStyle(fontSize: 16.0),
-                textAlign: TextAlign.left,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                widget.type == "House Call"?
-                "Description: ${widget.description}": "Time of Call: ${widget.callDetails["Time"] == "0"?"Not yet confirmed": widget.callDetails["Time"]}",
-                style: TextStyle(fontSize: 16.0),
-                textAlign: TextAlign.left,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                "Date Created: ${widget.date}",
-                style: TextStyle(fontSize: 16.0),
-                textAlign: TextAlign.left,
-              ),
-            ),
-            Divider(
-              height: 8.0,
-            ),
-            timeOptions(widget.timeSlots),
-          ],
+          children: buildBody(),
         ),
       ),
     );
   }
 
+  List<Widget> buildBody() {
+    List<Widget> body = [
+      titleBar(),
+      Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Text(
+          "Ticket ID: ${widget.complaintId}",
+          style: TextStyle(fontSize: 16.0),
+          textAlign: TextAlign.left,
+        ),
+      ),
+      Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Text(
+          "Issue: ${widget.issueType}",
+          style: TextStyle(fontSize: 16.0),
+          textAlign: TextAlign.left,
+        ),
+      ),
+    ];
+    if (widget.type == "House Call") {
+      body += [
+        Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            "Description: ${widget.description}",
+            style: TextStyle(fontSize: 16.0),
+            textAlign: TextAlign.left,
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            "Date Created: ${widget.date}",
+            style: TextStyle(fontSize: 16.0),
+            textAlign: TextAlign.left,
+          ),
+        ),
+        Divider(
+          height: 8.0,
+        ),
+        timeOptions(widget.timeSlots),
+      ];
+    }
+    else {
+      body += [
+        Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            "Date Created: ${widget.date}",
+            style: TextStyle(fontSize: 16.0),
+            textAlign: TextAlign.left,
+          ),
+        ),
+      ];
+    }
+    return body;
+  }
+
   Container titleBar() {
     Color issueColor = Colors.blueGrey[100];
     print(widget.progress);
-    if (widget.progress.toLowerCase() == "under review.") {
+    if (widget.progress.toLowerCase() == "under review") {
       issueColor = Color.fromRGBO(255, 255, 255, 1.0);
-    } else if (widget.progress.toLowerCase() == "agent allotted." || widget.progress.toLowerCase() == "call scheduled") {
+    } else if (widget.progress.toLowerCase() == "agent allotted" ||
+        widget.progress.toLowerCase() == "call scheduled") {
       issueColor = Color(0xFFE6BB24);
-    } else if (widget.progress.toLowerCase() == "resolved.") {
+    } else if (widget.progress.toLowerCase() == "resolved") {
       issueColor = Colors.lightGreen;
     }
 
@@ -132,7 +153,7 @@ class ComplaintCardState extends State<ComplaintCard> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          Icon(widget.type == "House Call"? Icons.home: Icons.phone),
+          Icon(widget.type == "House Call" ? Icons.home : Icons.phone),
           Text("${widget.productType}",
               style: TextStyle(fontSize: 24.0, color: Colors.white)),
           DecoratedBox(
@@ -155,28 +176,23 @@ class ComplaintCardState extends State<ComplaintCard> {
   }
 
   Widget timeOptions(List<Map<String, dynamic>> time) {
-
     if (widget.type == "House Call" && widget.status == "Open") {
       if (widget.timeSlot == "1") {
         widget.timeSlotChosen[0] = true;
         widget.timeSlotChosen[1] = false;
         widget.timeSlotChosen[2] = false;
-        widget.timeSlotChosen[3] = false;
       } else if (widget.timeSlot == "2") {
         widget.timeSlotChosen[0] = false;
         widget.timeSlotChosen[1] = true;
         widget.timeSlotChosen[2] = false;
-        widget.timeSlotChosen[3] = false;
       } else if (widget.timeSlot == "3") {
         widget.timeSlotChosen[0] = false;
         widget.timeSlotChosen[1] = false;
         widget.timeSlotChosen[2] = true;
-        widget.timeSlotChosen[3] = false;
       } else if (widget.timeSlot == "4") {
         widget.timeSlotChosen[0] = false;
         widget.timeSlotChosen[1] = false;
         widget.timeSlotChosen[2] = false;
-        widget.timeSlotChosen[3] = true;
       }
       print(widget.timeSlotChosen);
       print("Going to render now");
@@ -218,7 +234,6 @@ class ComplaintCardState extends State<ComplaintCard> {
                       widget.timeSlotChosen[0] = true;
                       widget.timeSlotChosen[1] = false;
                       widget.timeSlotChosen[2] = false;
-                      widget.timeSlotChosen[3] = false;
                       _chosenTime();
                     },
                   ),
@@ -238,7 +253,6 @@ class ComplaintCardState extends State<ComplaintCard> {
                       widget.timeSlotChosen[0] = false;
                       widget.timeSlotChosen[1] = true;
                       widget.timeSlotChosen[2] = false;
-                      widget.timeSlotChosen[3] = false;
                       _chosenTime();
                     },
                   ),
@@ -263,26 +277,6 @@ class ComplaintCardState extends State<ComplaintCard> {
                       widget.timeSlotChosen[0] = false;
                       widget.timeSlotChosen[1] = false;
                       widget.timeSlotChosen[2] = true;
-                      widget.timeSlotChosen[3] = false;
-                      _chosenTime();
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: RaisedButton(
-                    child: Text("Request another\n slot."),
-                    color: widget.timeSlotChosen[3]
-                        ? Colors.deepOrangeAccent
-                        : Colors.grey,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    onPressed: () {
-                      widget.timeSlotChosen[0] = false;
-                      widget.timeSlotChosen[1] = false;
-                      widget.timeSlotChosen[2] = false;
-                      widget.timeSlotChosen[3] = true;
                       _chosenTime();
                     },
                   ),
@@ -292,8 +286,7 @@ class ComplaintCardState extends State<ComplaintCard> {
           ],
         );
       }
-    }
-    else {
+    } else {
       return Container();
     }
   }
@@ -309,9 +302,6 @@ class ComplaintCardState extends State<ComplaintCard> {
     } else if (widget.timeSlotChosen[2]) {
       time = "3";
       widget.timeSlot = "3";
-    } else if (widget.timeSlotChosen[3]) {
-      time = "Request another";
-      widget.timeSlot = "0";
     }
     setState(() {});
     uploadTime(time);

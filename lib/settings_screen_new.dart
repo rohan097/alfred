@@ -126,6 +126,7 @@ class MyPanel {
               child: Text(
                 "$headerText1",
                 style: TextStyle(
+                  fontWeight: FontWeight.w600,
                   fontSize: 16.0,
                 ),
               ),

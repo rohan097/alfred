@@ -18,6 +18,9 @@ List<Widget> answers = [
         "In the unlikely event of you facing trouble with your product, you can use this application to schedule a house call or an appoinment "
         "to speak with one of our agents.",
     textAlign: TextAlign.justify,
+    style: TextStyle(
+      fontWeight: FontWeight.w500,
+    ),
   ),
   Text(
     "To create a ticket, click on the \"Chat\" button on the Homepage. This will bring you to the page where you can talk to Alfred, our "
@@ -30,6 +33,7 @@ List<Widget> answers = [
       style: TextStyle(
         color: Colors.black,
         fontSize: 14.0,
+        fontFamily: 'OpenSans'
       ),
       children: [
         TextSpan(

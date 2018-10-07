@@ -16,6 +16,18 @@ class ChatScreen extends StatefulWidget {
 /* https://github.com/VictorRancesCode/flutter_dialogflow/blob/master/example/lib/main.dart */
 
 class _ChatScreenState extends State<ChatScreen> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    print("Initialiising state in chat screen.");
+    Dialogflow dialogflow = Dialogflow(
+      token: "8f6e89a0df5f41349c6a0e5d0d3f3209",
+      sessionId: globals.firebaseUID,
+    );
+    dialogflow.clearContexts();
+    super.initState();
+  }
   final List<ChatMessage> _messages = <ChatMessage>[];
   final TextEditingController _textController = new TextEditingController();
 
@@ -160,7 +172,12 @@ class ChatMessage extends StatelessWidget {
         child: new Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
-            new Text(this.name, style: Theme.of(context).textTheme.subhead),
+            new Text(
+              this.name,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             new Container(
               decoration: BoxDecoration(
                 color: Colors.white54,

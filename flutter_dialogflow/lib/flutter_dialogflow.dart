@@ -269,6 +269,10 @@ class Dialogflow {
         "&lang=es&query=$query&lang=$language&sessionId=$sessionId&timezone=$timezone";
   }
 
+  String _getUrlClearContexts() {
+    return "https://api.dialogflow.com/v1/contexts?sessionId=$sessionId";
+}
+
   Future<AIResponse> sendQuery(query) async {
     var response = await http.get(
       _getUrl(query),
@@ -277,5 +281,15 @@ class Dialogflow {
     Map data = json.decode(response.body);
     AIResponse aiResponse = new AIResponse(data);
     return aiResponse;
+  }
+
+  Future clearContexts() async {
+    var response = await http.delete(
+      _getUrlClearContexts(),
+      headers: {HttpHeaders.AUTHORIZATION: "Bearer " + token},
+    );
+    Map data = json.decode(response.body);
+    print(data);
+    return data;
   }
 }

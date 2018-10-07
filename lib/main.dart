@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
     return new MaterialApp(
       title: 'Alfred',
       theme: new ThemeData(
+        fontFamily: 'OpenSans',
         primaryColor: Color(0xFF092c74),
         accentColor: Color(0xFFC54B25),
       ),
