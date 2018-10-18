@@ -19,10 +19,10 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    // TODO: Enter dialogflow token
     print("Initialiising state in chat screen.");
     Dialogflow dialogflow = Dialogflow(
-      token: "8f6e89a0df5f41349c6a0e5d0d3f3209",
+      token: "ENTER YOUR TOKEN HERE",
       sessionId: globals.firebaseUID,
     );
     dialogflow.clearContexts();
@@ -63,8 +63,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void Response(query) async {
     _textController.clear();
+    //TODO: Enter dialogflow token
     Dialogflow dialogflow = Dialogflow(
-      token: "8f6e89a0df5f41349c6a0e5d0d3f3209",
+      token: "ENTER YOUR TOKEN HERE",
       sessionId: globals.firebaseUID,
     );
     AIResponse response = await dialogflow.sendQuery(query);
